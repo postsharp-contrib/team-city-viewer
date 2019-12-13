@@ -229,16 +229,17 @@ namespace TeamCityViewer
                 string content =
                         "<build branchName=\"" + selectedBuild.BranchName + "\"><buildType id=\"" + selectedBuild.BuildTypeId + "\" /><comment><text>Triggered from Petr's Team City Viewer, I hope this works.</text></comment></build>";
 
-                if (MessageBox.Show(content, "Run this build?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",
-                        "eyJ0eXAiOiAiVENWMiJ9.aVdEZnJEaFlwcW8tcEl4US1sRUpvR3ZpTENn.Y2UwYWVjYjUtZThmZi00NzFjLTk0MDUtM2ExNDAzNDFiYzM4");
-                   var response = await httpClient.PostAsync("https://tc.postsharp.net/app/rest/buildQueue", new StringContent(
-                        content, Encoding.UTF8, "application/xml"
-                        ));
 
-                    await RefreshBuilds();
-                }
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    "eyJ0eXAiOiAiVENWMiJ9.aVdEZnJEaFlwcW8tcEl4US1sRUpvR3ZpTENn.Y2UwYWVjYjUtZThmZi00NzFjLTk0MDUtM2ExNDAzNDFiYzM4");
+                var response = await httpClient.PostAsync("https://tc.postsharp.net/app/rest/buildQueue",
+                    new StringContent(
+                        content, Encoding.UTF8, "application/xml"
+                    ));
+
+                await RefreshBuilds();
+          
             }
         }
     }
