@@ -58,7 +58,7 @@ namespace TeamCityViewer
             string xml = await webClient.DownloadStringTaskAsync("https://tc.postsharp.net/app/rest/builds?locator=defaultFilter:false&count=1000&fields=build(id,status,queuedDate,statusText,triggered(user),buildType,state,percentageComplete,branchName)");
             List<Build> builds = ParseXml(xml);
             IEnumerable<Build> sorted = builds.OrderByDescending(bld => bld.QueuedDate);
-            if (this.checkBox.IsChecked.Value)
+            if (this.chOnlyPetr.IsChecked.Value)
             {
                 sorted = sorted.Where(bld => bld.TriggeredByEmail == "petr@postsharp.net");
             }
@@ -227,7 +227,7 @@ namespace TeamCityViewer
             if (selectedBuild != null)
             {
                 string content =
-                        "<build branchName=\"" + selectedBuild.BranchName + "\"><buildType id=\"" + selectedBuild.BuildTypeId + "\" /><comment><text>Triggered from Petr's Team City Viewer, I hope this works.</text></comment></build>";
+                        "<build branchName=\"" + selectedBuild.BranchName + "\"><buildType id=\"" + selectedBuild.BuildTypeId + "\" /><comment><text>This is a re-run triggered by Petr' Team City Viewer.</text></comment></build>";
 
 
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
@@ -241,6 +241,12 @@ namespace TeamCityViewer
                 await RefreshBuilds();
           
             }
+        }
+
+        private async void bDownloadOpenLog_Click(object sender, RoutedEventArgs e)
+        {
+            DownloadWindow downloadWindow = new DownloadWindow(selectedBuild.Id, selectedBuild.BuildTypeName, selectedBuild.BranchName);
+            downloadWindow.Show();
         }
     }
 

@@ -39,12 +39,12 @@
             </Border>
         </DataTemplate>
     </Window.Resources>
-    <Grid Margin="0,0,0,-74">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="161*"/>
-            <ColumnDefinition Width="103*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="listBox" Margin="10,27,293,9" HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" SelectionChanged="listBox_SelectionChanged">
+        <ListBox x:Name="listBox" Margin="5" HorizontalContentAlignment="Stretch" SelectionChanged="listBox_SelectionChanged">
             <ListBox.Items>
                 <local:Build 
                     BranchName="release/6.2"
@@ -61,17 +61,29 @@
                 <local:Build BranchName="release/6.2"></local:Build>
             </ListBox.Items>
         </ListBox>
-        <Label x:Name="label" Content="Recent builds:" HorizontalAlignment="Left" Margin="10,1,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="checkBox" IsChecked="True" Content="Only builds triggered by Petr Hudeček" Margin="0,72,66,0" VerticalAlignment="Top" RenderTransformOrigin="0.792,0.028" HorizontalAlignment="Right" Width="222" Grid.Column="1" Checked="checkBox_Checked" Unchecked="checkBox_Checked" />
-        <Button x:Name="button" Content="Refresh builds" Margin="0,27,68,0" VerticalAlignment="Top" RenderTransformOrigin="0.594,3.142" Height="40" Click="button_Click" HorizontalAlignment="Right" Width="220" Grid.Column="1"/>
-        <CheckBox x:Name="chAutorefresh" IsChecked="True" Content="Auto refresh" Margin="0,92,66,0" VerticalAlignment="Top" RenderTransformOrigin="0.792,0.028" HorizontalAlignment="Right" Width="222" Grid.Column="1" Checked="chAutorefresh_Checked" Unchecked="chAutorefresh_Checked" />
-        <TextBlock x:Name="lblSelectedBuild" Margin="0,157,10,0" TextWrapping="Wrap" Text="No build selected" VerticalAlignment="Top" HorizontalAlignment="Right" Width="278" Height="99" Grid.Column="1"/>
-        <Button x:Name="bDownloadLog" Content="Download build log" Margin="0,261,114,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Right" Width="174" Click="bDownloadLog_Click" Grid.Column="1"/>
-        <Button x:Name="bGoToWebsite" Content="Open in browser" Margin="0,294,148,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Right" Width="140" Click="bGoToWebsite_Click" Grid.Column="1"/>
-        <Button x:Name="bDeemphasize" Content="De-emphasize up to this build" Margin="0,327,101,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Right" Width="187" Click="bDeemphasize_Click" Grid.Column="1"/>
-        <Button x:Name="bReemphasize" Content="Re-emphasize from this build up" Margin="0,360,101,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Right" Width="187" Click="bReemphasize_Click" Grid.Column="1"/>
-        <Button x:Name="bOpenLogInBrowser" Content="Open log in browser" Margin="0,294,10,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Right" Width="133" Click="bOpenLogInBrowser_Click" Grid.Column="1"/>
-        <Button x:Name="bRerunThisBuild" Content="Run again" Margin="0,418,101,0" VerticalAlignment="Top" Height="28" HorizontalAlignment="Right" Width="187" Click="bRerunThisBuild_Click" Grid.Column="1"/>
-
+        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
+            <Button x:Name="button" Content="Refresh builds" Height="40" Click="button_Click" Width="220" />
+            <CheckBox x:Name="chOnlyPetr" IsChecked="True" Content="Only builds triggered by Petr Hudeček" Checked="checkBox_Checked" Unchecked="checkBox_Checked" />
+            <CheckBox x:Name="chAutorefresh" IsChecked="True" Content="Auto refresh" Checked="chAutorefresh_Checked" Unchecked="chAutorefresh_Checked" />
+            <TextBlock x:Name="lblSelectedBuild" TextWrapping="Wrap" Text="No build selected" Width="350" Margin="10" />
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="bDownloadLog" Content="Download build log" Click="bDownloadLog_Click" Grid.Row="0" Grid.Column="0" Height="28" Margin="5" />
+                <Button x:Name="bOpenLogInBrowser" Content="Open log in browser" Click="bOpenLogInBrowser_Click" Grid.Row="0" Grid.Column="1" Height="28" Margin="5" />
+                <Button x:Name="bGoToWebsite" Content="Open in browser" Click="bGoToWebsite_Click" Grid.Row="1" Grid.Column="1" Height="28" Margin="5" />
+                <Button x:Name="bRerunThisBuild" Content="Run again" Click="bRerunThisBuild_Click" Grid.Row="1" Grid.Column="0" Height="28" Margin="5" />
+                <Button x:Name="bDownloadLogTrue" Content="Download and open build log" Click="bDownloadOpenLog_Click" Grid.Row="2" Grid.Column="0" Height="28" Margin="5" />
+            </Grid>
+            <Button x:Name="bDeemphasize" Content="De-emphasize up to this build" Height="28" Width="187" Click="bDeemphasize_Click" />
+            <Button x:Name="bReemphasize" Content="Re-emphasize from this build up" Height="28" Width="187" Click="bReemphasize_Click" />
+        </StackPanel>
     </Grid>
 </Window>

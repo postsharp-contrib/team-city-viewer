@@ -1,0 +1,19 @@
+<Window x:Class="TeamCityViewer.DownloadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TeamCityViewer"
+        mc:Ignorable="d"
+        Title="Downloading window" Height="450" Width="600">
+    <Grid Background="Bisque" Margin="10">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+            <TextBlock x:Name="tbLog" HorizontalAlignment="Center" FontSize="24" Margin="10">Downloading...</TextBlock>
+            <Button x:Name="bOpenLogFile" IsEnabled="False" Click="BOpenLogFile_OnClick" Height="30" MinWidth="300">Open in default editor</Button>
+            <Button x:Name="bOpenLogFolder" Click="BOpenLogFolder_OnClick" Height="30">Open folder</Button>
+            <TextBlock x:Name="tbZip" HorizontalAlignment="Center" FontSize="24" Margin="10">Downloading...</TextBlock>
+            <Button x:Name="bOpenInCode" IsEnabled="False" Click="BOpenZip_Click" Height="30" MinWidth="300">Open in Code</Button>
+            <Button x:Name="bOpenLogFolder2" Click="BOpenLogFolder_OnClick" Height="30">Open folder</Button>
+        </StackPanel>
+    </Grid>
+</Window>
