@@ -267,7 +267,7 @@ namespace TeamCityViewer
         public string StatusText { get; set; }
         public string BuildTypeName { get; set; }
         public DateTime QueuedDate { get; set; }
-        public string DisplayedQueuedDate => QueuedDate.ToString("d. M. yyyy HH:mm:ss");
+        public string DisplayedQueuedDate => QueuedDate.ToLocalTime().ToString("d. M. yyyy HH:mm:ss");
         public string TriggeredByName { get; set; }
         public string TriggeredByEmail { get; set; }
 
