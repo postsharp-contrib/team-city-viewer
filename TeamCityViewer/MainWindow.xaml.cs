@@ -60,33 +60,55 @@ namespace TeamCityViewer
         private async Task RefreshBuilds()
         {
             this.button.IsEnabled = false;
-            WebClient webClient = new WebClient();
-            webClient.Headers[HttpRequestHeader.Authorization] = "Bearer " + SavedConfig.Instance.Token;
-            string xml = await webClient.DownloadStringTaskAsync("https://tc.postsharp.net/app/rest/builds?locator=defaultFilter:false&count=1000&fields=build(id,status,queuedDate,statusText,triggered(user),buildType,state,percentageComplete,branchName)");
-            List<Build> builds = ParseXml(xml);
-            IEnumerable<Build> sorted = builds.OrderByDescending(bld => bld.QueuedDate);
-            if (this.chOnlyMe.IsChecked.Value)
+            try
             {
-                sorted = sorted.Where(bld => bld.TriggeredByEmail == SavedConfig.Instance.Email);
-            }
-            var buildList = new List<object>();
-            Build lastBuild = null;
-            foreach(var build in sorted)
-            {
-                if (lastBuild != null)
+                WebClient webClient = new WebClient();
+                webClient.Headers[HttpRequestHeader.Authorization] = "Bearer " + SavedConfig.Instance.Token;
+                string xml;
+                try
                 {
-                    if (lastBuild.BranchName != build.BranchName ||
-                        lastBuild.QueuedDate != build.QueuedDate)
-                    {
-                        buildList.Add(new BuildSeparator());
-                    }
+                    xml = await webClient.DownloadStringTaskAsync(
+                        "https://tc.postsharp.net/app/rest/builds?locator=defaultFilter:false&count=1000&fields=build(id,status,queuedDate,statusText,triggered(user),buildType,state,percentageComplete,branchName)");
                 }
-                lastBuild = build;
-                buildList.Add(build);
+                catch (Exception ex)
+                {
+                    this.lblCannotContent.Text = "Cannot connect to TeamCity.\n" + ex.Message;
+                    this.lblCannotContent.Visibility = Visibility.Visible;
+                    return;
+                }
+
+                List<Build> builds = ParseXml(xml);
+                IEnumerable<Build> sorted = builds.OrderByDescending(bld => bld.QueuedDate);
+                if (this.chOnlyMe.IsChecked.Value)
+                {
+                    sorted = sorted.Where(bld => bld.TriggeredByEmail == SavedConfig.Instance.Email);
+                }
+
+                var buildList = new List<object>();
+                Build lastBuild = null;
+                foreach (var build in sorted)
+                {
+                    if (lastBuild != null)
+                    {
+                        if (lastBuild.BranchName != build.BranchName ||
+                            lastBuild.QueuedDate != build.QueuedDate)
+                        {
+                            buildList.Add(new BuildSeparator());
+                        }
+                    }
+
+                    lastBuild = build;
+                    buildList.Add(build);
+                }
+
+                this.listBox.ItemsSource = buildList;
+                RefreshOpacities();
+                this.lblCannotContent.Visibility = Visibility.Collapsed;
             }
-            this.listBox.ItemsSource = buildList;
-            RefreshOpacities();
-            this.button.IsEnabled = true;
+            finally
+            {
+                this.button.IsEnabled = true;
+            }
         }
 
         private List<Build> ParseXml(string xml)

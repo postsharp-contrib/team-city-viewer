@@ -87,6 +87,7 @@
             </Grid>
             <Button x:Name="bDeemphasize" Content="De-emphasize up to this build" Height="28" Width="187" Click="bDeemphasize_Click" />
             <Button x:Name="bReemphasize" Content="Re-emphasize from this build up" Height="28" Width="187" Click="bReemphasize_Click" />
+            <TextBlock Visibility="Collapsed" Foreground="Red" x:Name="lblCannotContent">Cannot connect to TeamCity.</TextBlock>
         </StackPanel>
     </Grid>
 </Window>
