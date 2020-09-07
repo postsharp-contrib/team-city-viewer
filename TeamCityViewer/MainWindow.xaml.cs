@@ -255,15 +255,23 @@ namespace TeamCityViewer
             downloadWindow.Show();
         }
 
-        private void ChangeEmail_Click(object sender, RoutedEventArgs e)
+        private async void ChangeEmail_Click(object sender, RoutedEventArgs e)
         {
             string email = Microsoft.VisualBasic.Interaction.InputBox("Enter your TeamCity e-mail login.", "Update user (part 1/2)", SavedConfig.Instance.Email);
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return;
+            }
             string token = Microsoft.VisualBasic.Interaction.InputBox("Enter your TeamCity token (Create it with My Settings & Tools -> Access Tokens -> Create access token).", "Update user (part 2/2)", SavedConfig.Instance.Token);
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return;
+            }
             SavedConfig.Instance.Token = token;
             SavedConfig.Instance.Email = email;
             SavedConfig.Instance.Save();
             RefreshOnlyMe();
-            RefreshBuilds();
+            await RefreshBuilds();
         }
     }
     internal class BuildSeparator
