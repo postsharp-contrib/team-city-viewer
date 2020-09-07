@@ -62,8 +62,11 @@
             </ListBox.Items>
         </ListBox>
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
-            <Button x:Name="button" Content="Refresh builds" Height="40" Click="button_Click" Width="220" />
-            <CheckBox x:Name="chOnlyPetr" IsChecked="True" Content="Only builds triggered by Petr Hudeček" Checked="checkBox_Checked" Unchecked="checkBox_Checked" />
+            <Button x:Name="button" Content="Refresh builds" Height="40" Click="button_Click" Width="220" Margin="0,0,0,10" />
+            <StackPanel Orientation="Horizontal">
+                <CheckBox x:Name="chOnlyMe" IsChecked="True" Content="Only builds triggered by Petr Hudeček" Checked="checkBox_Checked" Unchecked="checkBox_Checked" Margin="0,0,0,10" />
+                <Button Click="ChangeEmail_Click" Margin="10,0,0,0" Padding="15,0">...</Button>
+            </StackPanel>
             <CheckBox x:Name="chAutorefresh" IsChecked="True" Content="Auto refresh" Checked="chAutorefresh_Checked" Unchecked="chAutorefresh_Checked" />
             <TextBlock x:Name="lblSelectedBuild" TextWrapping="Wrap" Text="No build selected" Width="350" Margin="10" />
             <Grid Margin="5">

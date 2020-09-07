@@ -38,6 +38,7 @@
     <ApplicationIcon>TeamCityIce.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -61,6 +62,7 @@
     <Compile Include="DownloadWindow.xaml.cs">
       <DependentUpon>DownloadWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SavedConfig.cs" />
     <Compile Include="TeamCityApplicationWideSettings.cs" />
     <Page Include="DownloadWindow.xaml" />
     <Page Include="MainWindow.xaml">

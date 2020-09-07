@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using LearningFridays;
 
 namespace TeamCityViewer
 {
@@ -34,7 +35,13 @@ namespace TeamCityViewer
             timer.Interval = TimeSpan.FromSeconds(38);
             timer.Tick += timer_Tick;
             timer.Start();
+            RefreshOnlyMe();
             allReady = true;
+        }
+
+        private void RefreshOnlyMe()
+        {
+            this.chOnlyMe.Content = "Only builds triggered by " + SavedConfig.Instance.Email;
         }
 
         private async void timer_Tick(object sender, EventArgs e)
@@ -54,13 +61,13 @@ namespace TeamCityViewer
         {
             this.button.IsEnabled = false;
             WebClient webClient = new WebClient();
-            webClient.Headers[HttpRequestHeader.Authorization] = "Bearer eyJ0eXAiOiAiVENWMiJ9.aVdEZnJEaFlwcW8tcEl4US1sRUpvR3ZpTENn.Y2UwYWVjYjUtZThmZi00NzFjLTk0MDUtM2ExNDAzNDFiYzM4";
+            webClient.Headers[HttpRequestHeader.Authorization] = "Bearer " + SavedConfig.Instance.Token;
             string xml = await webClient.DownloadStringTaskAsync("https://tc.postsharp.net/app/rest/builds?locator=defaultFilter:false&count=1000&fields=build(id,status,queuedDate,statusText,triggered(user),buildType,state,percentageComplete,branchName)");
             List<Build> builds = ParseXml(xml);
             IEnumerable<Build> sorted = builds.OrderByDescending(bld => bld.QueuedDate);
-            if (this.chOnlyPetr.IsChecked.Value)
+            if (this.chOnlyMe.IsChecked.Value)
             {
-                sorted = sorted.Where(bld => bld.TriggeredByEmail == "petr@postsharp.net");
+                sorted = sorted.Where(bld => bld.TriggeredByEmail == SavedConfig.Instance.Email);
             }
             var buildList = new List<object>();
             Build lastBuild = null;
@@ -96,7 +103,7 @@ namespace TeamCityViewer
     <build id="12633" status="SUCCESS" state="running" percentageComplete="2" branchName="topic/6.4/bug-15285-25432-rewrite-initialized">
         <statusText>Resolving artifact dependencies</statusText>
         <buildType id="PostSharp64_TestNetCore30vs2019onWindows" name="Test .NET Core 3.0 (VS2019) on Windows" projectName="PostSharp 6.4 (preview)" projectId="PostSharp64" href="/app/rest/buildTypes/id:PostSharp64_TestNetCore30vs2019onWindows" webUrl="https://tc.postsharp.net/viewType.html?buildTypeId=PostSharp64_TestNetCore30vs2019onWindows"/>
-        <queuedDate>20191031T120128+0000</queuedDate>
+        <queuedDate>20191031T12012ChangeEmail_Clicke>
         <triggered>
             <user username="petr@postsharp.net" name="Petr Hudecek" id="8" href="/app/rest/users/id:8"/>
         </triggered>
@@ -227,12 +234,11 @@ namespace TeamCityViewer
             if (selectedBuild != null)
             {
                 string content =
-                        "<build branchName=\"" + selectedBuild.BranchName + "\"><buildType id=\"" + selectedBuild.BuildTypeId + "\" /><comment><text>This is a re-run triggered by Petr' Team City Viewer.</text></comment></build>";
+                        "<build branchName=\"" + selectedBuild.BranchName + "\"><buildType id=\"" + selectedBuild.BuildTypeId + "\" /><comment><text>This is a re-run triggered by the Team City Viewer.</text></comment></build>";
 
 
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-                    "Bearer",
-                    "eyJ0eXAiOiAiVENWMiJ9.aVdEZnJEaFlwcW8tcEl4US1sRUpvR3ZpTENn.Y2UwYWVjYjUtZThmZi00NzFjLTk0MDUtM2ExNDAzNDFiYzM4");
+                    "Bearer", SavedConfig.Instance.Token);
                 var response = await httpClient.PostAsync("https://tc.postsharp.net/app/rest/buildQueue",
                     new StringContent(
                         content, Encoding.UTF8, "application/xml"
@@ -248,8 +254,18 @@ namespace TeamCityViewer
             DownloadWindow downloadWindow = new DownloadWindow(selectedBuild.Id, selectedBuild.BuildTypeName, selectedBuild.BranchName);
             downloadWindow.Show();
         }
-    }
 
+        private void ChangeEmail_Click(object sender, RoutedEventArgs e)
+        {
+            string email = Microsoft.VisualBasic.Interaction.InputBox("Enter your TeamCity e-mail login.", "Update user (part 1/2)", SavedConfig.Instance.Email);
+            string token = Microsoft.VisualBasic.Interaction.InputBox("Enter your TeamCity token (Create it with My Settings & Tools -> Access Tokens -> Create access token).", "Update user (part 2/2)", SavedConfig.Instance.Token);
+            SavedConfig.Instance.Token = token;
+            SavedConfig.Instance.Email = email;
+            SavedConfig.Instance.Save();
+            RefreshOnlyMe();
+            RefreshBuilds();
+        }
+    }
     internal class BuildSeparator
     {
         public BuildSeparator()
