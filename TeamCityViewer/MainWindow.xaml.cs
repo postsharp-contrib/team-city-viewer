@@ -189,7 +189,7 @@ namespace TeamCityViewer
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.listBox.SelectedItem is Build build) {
-                this.lblSelectedBuild.Text = "Selected: " + Environment.NewLine + build.BranchName + " (" + build.BuildTypeName + ")";
+                this.lblSelectedBuild.Text = "Selected: " + Environment.NewLine + build.BranchName + " (" + build.BuildTypeName + "); ID: " + build.Id;
                 selectedBuild = build;
             }
         }
