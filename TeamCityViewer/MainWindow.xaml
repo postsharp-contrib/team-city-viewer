@@ -7,7 +7,7 @@
         Icon="TeamCityIce.ico"
         Loaded="Window_Loaded"
         mc:Ignorable="d"
-        Title="Team City Viewer" Height="450" Width="800">
+        Title="Team City Viewer" Height="750" Width="1300">
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:BuildSeparator}">
             <Border Height="22" Background="Transparent" Margin="2" CornerRadius="2">
@@ -31,7 +31,7 @@
                                              Foreground="{Binding DisplayedForeground, Mode=OneWay}"
                                              Margin="2">
                         </ProgressBar>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock HorizontalAlignment="Left" Padding="100,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap">
                                     <Run Text="{Binding StatusText}"></Run>
                         </TextBlock>
                     </Grid>
@@ -68,9 +68,10 @@
                 <Button Click="ChangeEmail_Click" Margin="10,0,0,0" Padding="15,0">...</Button>
             </StackPanel>
             <CheckBox x:Name="chAutorefresh" IsChecked="True" Content="Auto refresh" Checked="chAutorefresh_Checked" Unchecked="chAutorefresh_Checked" />
-            <TextBlock x:Name="lblSelectedBuild" TextWrapping="Wrap" Text="No build selected" Width="350" Margin="10" />
+            <GroupBox Header=" Selected build " Margin="5">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
@@ -79,15 +80,49 @@
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="bDownloadLog" Content="Download build log" Click="bDownloadLog_Click" Grid.Row="0" Grid.Column="0" Height="28" Margin="5" />
-                <Button x:Name="bOpenLogInBrowser" Content="Open log in browser" Click="bOpenLogInBrowser_Click" Grid.Row="0" Grid.Column="1" Height="28" Margin="5" />
-                <Button x:Name="bGoToWebsite" Content="Open in browser" Click="bGoToWebsite_Click" Grid.Row="1" Grid.Column="1" Height="28" Margin="5" />
-                <Button x:Name="bRerunThisBuild" Content="Run again" Click="bRerunThisBuild_Click" Grid.Row="1" Grid.Column="0" Height="28" Margin="5" />
-                <Button x:Name="bDownloadLogTrue" Content="Download and open build log" Click="bDownloadOpenLog_Click" Grid.Row="2" Grid.Column="0" Height="28" Margin="5" />
+                <Button x:Name="bDownloadLog" Content="Download build log" Click="bDownloadLog_Click" Grid.Row="0" Grid.Column="0" FontSize="10" Margin="5" />
+                <Button x:Name="bOpenLogInBrowser" Content="Open log in browser" Click="bOpenLogInBrowser_Click" Grid.Row="0" Grid.Column="1" FontSize="10" Margin="5" />
+                
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="lblSelectedBuild" TextWrapping="Wrap" Width="250"  Text="No build selected" />
+                
+                <Button x:Name="bGoToWebsite" Content="Open in browser" Click="bGoToWebsite_Click" Grid.Row="2" Grid.Column="1" Height="28" Margin="5" />
+                <Button x:Name="bRerunThisBuild" Content="▶️ Run again" Click="bRerunThisBuild_Click" Grid.Row="2" Grid.Column="0" Height="28" Margin="5" />
+                
+                <Button x:Name="bDownloadLogTrue" Content="📥 Download and open build log and logs" Click="bDownloadOpenLog_Click" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" Height="28" Margin="5" />
             </Grid>
+            </GroupBox>
             <Button x:Name="bDeemphasize" Content="De-emphasize up to this build" Height="28" Width="187" Click="bDeemphasize_Click" />
             <Button x:Name="bReemphasize" Content="Re-emphasize from this build up" Height="28" Width="187" Click="bReemphasize_Click" />
-            <TextBlock Visibility="Collapsed" Foreground="Red" x:Name="lblCannotContent">Cannot connect to TeamCity.</TextBlock>
+            <TextBlock Visibility="Collapsed" Foreground="Red" x:Name="lblCannotContent" Width="250" TextWrapping="Wrap">Cannot connect to TeamCity.</TextBlock>
+            <GroupBox Header=" Run new build ">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Project: </TextBlock>
+                    <local:MyComboBox MinWidth="220" Grid.Row="0" Grid.Column="1" SelectedIndex="0" Margin="5,2,2,2" Grid.ColumnSpan="2" x:Name="cbProjects" x:FieldModifier="public" SelectionChanged="CbProjects_OnSelectionChanged">
+                        <ComboBoxItem>6.5</ComboBoxItem>
+                    </local:MyComboBox>
+                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Configuration: </TextBlock>
+                    <local:MyComboBox MinWidth="220" Grid.Row="1" Grid.Column="1" SelectedIndex="0" Margin="5,2,2,2" Grid.ColumnSpan="2" x:Name="cbConfigurations" x:FieldModifier="public" SelectionChanged="CbConfiguration_OnSelectionChanged">
+                        <ComboBoxItem>Build Artifacts</ComboBoxItem>
+                    </local:MyComboBox>
+                    <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Branch: </TextBlock>
+                    <local:MyComboBox MinWidth="220" Grid.Row="2" Grid.Column="1" SelectedIndex="0" IsEditable="True" Margin="5,2,2,2" x:Name="cbBranches" x:FieldModifier="public">
+                        <ComboBoxItem>release/6.5</ComboBoxItem>
+                    </local:MyComboBox>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="2" x:Name="bRefreshBranches" Click="bRefreshBranches_Click">🔄</Button>
+                    <Button Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="2" x:Name="bEnqueueNewBuild" Padding="0,5" Click="bEnqueueNewBuild_Click">Enqueue build</Button>
+                </Grid>
+            </GroupBox>
         </StackPanel>
     </Grid>
 </Window>

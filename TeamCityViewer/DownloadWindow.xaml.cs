@@ -13,6 +13,9 @@ namespace TeamCityViewer
         private string buildLogFileName;
         private string zipFileName;
         private string zipFolder;
+        private string finalTitle;
+        private bool buildLogDownloaded;
+        private bool logsDownloaded;
         public int SelectedBuildId { get; }
 
         public DownloadWindow(int selectedBuildId, string buildTypeName, string branchName)
@@ -21,6 +24,7 @@ namespace TeamCityViewer
             InitializeComponent();
 
             this.Title = "Downloading window: " + buildTypeName + " " + branchName;
+            this.finalTitle = "Done: " + buildTypeName + " " + branchName;
 
             tempDirectory = Path.Combine(Path.GetTempPath(), "TeamCityViewer");
             Directory.CreateDirectory(tempDirectory);
@@ -39,6 +43,7 @@ namespace TeamCityViewer
             {
                 Dispatcher.Invoke(() =>
                 {
+                    buildLogDownloaded = true;
                     if (t.IsFaulted)
                     {
                         this.tbLog.Text = t.Exception.Message;
@@ -48,6 +53,7 @@ namespace TeamCityViewer
                         this.tbLog.Text = "Build log downloaded.";
                         this.bOpenLogFile.IsEnabled = true;
                     }
+                    ConsiderChangingTitle();
                 });
             });
             HttpClientDownloadWithProgress httpClient2 = new HttpClientDownloadWithProgress("https://tc.postsharp.net/app/rest/builds/id:" + selectedBuildId + "/artifacts/content/logs.zip", zipFileName);
@@ -87,26 +93,24 @@ namespace TeamCityViewer
                                     this.tbZip.Text = tt.Exception.InnerExceptions[0].Message;
                                 });
                             }
+
+                            Dispatcher.Invoke(() =>
+                            {
+                                this.logsDownloaded = true;
+                                this.ConsiderChangingTitle();
+                            });
                         });
                     }
                 });
             });
-            //
-            // // webClient.Headers[HttpRequestHeader.Authorization] = "Bearer eyJ0eXAiOiAiVENWMiJ9.VllHdE13WnZwRkw2OGVxdC0wRWhUcUR3blow.MmNjZDk1NDgtYmQ5ZC00NDMzLTgwZTgtMjYyZjViMzBmNGRi";
-            // try
-            // {
-            //     string xml = await httpClient.GetStringAsync("https://tc.postsharp.net/downloadBuildLog.html?buildId=" + selectedBuild.Id);
-            //
-            //     string a = xml;
-            //     MessageBox.Show(xml);
-            // }
-            // catch
-            // {
-            //     MessageBox.Show("A");
-            // }
-            //
-            // // string xml = await httpClient.GetStringAsync("https://tc.postsharp.net/app/rest/builds/id:" + selectedBuild.Id + "/artifacts/content/logs.zip");
-            // // https://tc.postsharp.net/httpAuth/downloadBuildLog.html?buildId=142545
+        }
+
+        private void ConsiderChangingTitle()
+        {
+            if (buildLogDownloaded && logsDownloaded)
+            {
+                this.Title = finalTitle;
+            }
         }
 
         private string FormatProgress(double? percentage, long totalBytesDownloaded, long? totalFileSize)

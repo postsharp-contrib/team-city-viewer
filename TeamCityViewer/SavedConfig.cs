@@ -9,7 +9,11 @@ namespace LearningFridays
     {
         public string Token = "eyJ0eXAiOiAiVENWMiJ9.aVdEZnJEaFlwcW8tcEl4US1sRUpvR3ZpTENn.Y2UwYWVjYjUtZThmZi00NzFjLTk0MDUtM2ExNDAzNDFiYzM4";
         public string Email = "petr@postsharp.net";
+        public string LastSelectedProjectId = "PostSharp67";
+        public string LastSelectedBuildType = "???";
+        
         private bool _loaded = false;
+        
         
         
         private static SavedConfig _instance;

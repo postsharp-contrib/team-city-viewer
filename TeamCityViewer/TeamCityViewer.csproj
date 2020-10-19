@@ -59,9 +59,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApiCall.cs" />
+    <Compile Include="Build.cs" />
+    <Compile Include="BuildSeparator.cs" />
     <Compile Include="DownloadWindow.xaml.cs">
       <DependentUpon>DownloadWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EnqueueNewBuildForm.cs" />
+    <Compile Include="MyComboBox.cs" />
     <Compile Include="SavedConfig.cs" />
     <Compile Include="TeamCityApplicationWideSettings.cs" />
     <Page Include="DownloadWindow.xaml" />
