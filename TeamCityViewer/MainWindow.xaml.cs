@@ -15,7 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using LearningFridays;
 
 namespace TeamCityViewer
 {
@@ -69,7 +68,7 @@ namespace TeamCityViewer
                 try
                 {
                     xml = await webClient.DownloadStringTaskAsync(
-                        "https://tc.postsharp.net/app/rest/builds?locator=defaultFilter:false&count=1000&fields=build(id,status,queuedDate,statusText,triggered(user),buildType,state,percentageComplete,branchName)");
+                        $"https://{SavedConfig.HostName}/app/rest/builds?locator=defaultFilter:false&count=1000&fields=build(id,status,queuedDate,statusText,triggered(user),buildType,state,percentageComplete,branchName)");
                 }
                 catch (Exception ex)
                 {
@@ -121,16 +120,6 @@ namespace TeamCityViewer
                 builds.Add(ParseBuild(build));
             }
             return builds;
-            /*
-   <builds>
-    <build id="12633" status="SUCCESS" state="running" percentageComplete="2" branchName="topic/6.4/bug-15285-25432-rewrite-initialized">
-        <statusText>Resolving artifact dependencies</statusText>
-        <buildType id="PostSharp64_TestNetCore30vs2019onWindows" name="Test .NET Core 3.0 (VS2019) on Windows" projectName="PostSharp 6.4 (preview)" projectId="PostSharp64" href="/app/rest/buildTypes/id:PostSharp64_TestNetCore30vs2019onWindows" webUrl="https://tc.postsharp.net/viewType.html?buildTypeId=PostSharp64_TestNetCore30vs2019onWindows"/>
-        <queuedDate>20191031T12012ChangeEmail_Clicke>
-        <triggered>
-            <user username="petr@postsharp.net" name="Petr Hudecek" id="8" href="/app/rest/users/id:8"/>
-        </triggered>
-    </build>*/
         }
 
         private Build ParseBuild(XElement build)
@@ -198,7 +187,7 @@ namespace TeamCityViewer
         {
             if (selectedBuild != null)
             {
-                System.Diagnostics.Process.Start("https://tc.postsharp.net/downloadBuildLog.html?buildId=" + selectedBuild.Id);
+                System.Diagnostics.Process.Start($"https://{SavedConfig.HostName}/downloadBuildLog.html?buildId=" + selectedBuild.Id);
             }
 
         }
@@ -207,7 +196,7 @@ namespace TeamCityViewer
         {
             if (selectedBuild != null)
             {
-                System.Diagnostics.Process.Start("https://tc.postsharp.net/viewLog.html?buildId=" + selectedBuild.Id);
+                System.Diagnostics.Process.Start($"https://{SavedConfig.HostName}/viewLog.html?buildId=" + selectedBuild.Id);
             }
         }
 
@@ -246,7 +235,7 @@ namespace TeamCityViewer
         {
             if (selectedBuild != null)
             {
-                System.Diagnostics.Process.Start("https://tc.postsharp.net/viewLog.html?buildId=" + selectedBuild.Id + "&tab=buildLog");
+                System.Diagnostics.Process.Start($"https://{SavedConfig.HostName}/viewLog.html?buildId=" + selectedBuild.Id + "&tab=buildLog");
             }
         }
 
@@ -258,7 +247,7 @@ namespace TeamCityViewer
                 string content =
                         "<build branchName=\"" + selectedBuild.BranchName + "\"><buildType id=\"" + selectedBuild.BuildTypeId + "\" /><comment><text>This is a re-run triggered by the Team City Viewer.</text></comment></build>";
 
-                var response = await ApiCall.Client().PostAsync("https://tc.postsharp.net/app/rest/buildQueue",
+                var response = await ApiCall.Client().PostAsync($"https://{SavedConfig.HostName}/app/rest/buildQueue",
                     new StringContent(
                         content, Encoding.UTF8, "application/xml"
                     ));

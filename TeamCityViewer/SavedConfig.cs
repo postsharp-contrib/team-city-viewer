@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace LearningFridays
+namespace TeamCityViewer
 {
     public class SavedConfig
     {
@@ -11,6 +10,8 @@ namespace LearningFridays
         public string Email = "petr@postsharp.net";
         public string LastSelectedProjectId = "PostSharp67";
         public string LastSelectedBuildType = "???";
+
+        public static string HostName = "tc.postsharp.net";
         
         private bool _loaded = false;
         

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
-using LearningFridays;
 
 namespace TeamCityViewer
 {
@@ -19,7 +18,7 @@ namespace TeamCityViewer
         }
         public async void LoadProjects()
         {
-            var response = await ApiCall.Client().GetAsync("https://tc.postsharp.net/app/rest/projects/?fields=project(id,name,buildTypes(buildType(id,name)))");
+            var response = await ApiCall.Client().GetAsync($"https://{SavedConfig.HostName}/app/rest/projects/?fields=project(id,name,buildTypes(buildType(id,name)))");
             var responseAsText = await response.Content.ReadAsStringAsync();
             XDocument xDoc = XDocument.Parse(responseAsText);
             this.mainWindow.cbProjects.Items.Clear();
@@ -56,7 +55,7 @@ namespace TeamCityViewer
 
         private async Task LoadBranchesForProject(TCProject tcProject)
         {
-            var response = await ApiCall.Client().GetAsync($"https://tc.postsharp.net/app/rest/projects/id:{tcProject.Id}/branches");
+            var response = await ApiCall.Client().GetAsync($"https://{SavedConfig.HostName}/app/rest/projects/id:{tcProject.Id}/branches");
             var responseAsText = await response.Content.ReadAsStringAsync();
             XDocument xDoc = XDocument.Parse(responseAsText);
             tcProject.Branches.Clear();
@@ -141,7 +140,7 @@ namespace TeamCityViewer
             string content =
                 $"<build branchName=\"{mainWindow.cbBranches.Text}\"><buildType id=\"{(mainWindow.cbConfigurations.SelectedItem as TCConfiguration).Id}\" /><comment><text>This is a new build triggered with the new form by the Team City Viewer.</text></comment></build>";
 
-            var response = await ApiCall.Client().PostAsync("https://tc.postsharp.net/app/rest/buildQueue",
+            var response = await ApiCall.Client().PostAsync($"https://{SavedConfig.HostName}/app/rest/buildQueue",
                 new StringContent(
                     content, Encoding.UTF8, "application/xml"
                 ));
